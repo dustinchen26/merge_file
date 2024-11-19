@@ -1,14 +1,22 @@
+<!-- 
+  Copyright © [2023] [Dustin_Chen]. All rights reserved.
+  Author: Dustin_Chen
+  Email:  Dustin_Chen@compal.com or chuhpsdustin@gmail.com
+-->
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>檔案合併工具</title>
+    <title>Upload multiple files and merge</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
+            font-size: 14px;
+            font-family: Roboto, sans-serif;
+            padding: 20px;			
+        }		
+		
         input[type="file"] {
             margin: 10px 0;
         }
@@ -51,7 +59,11 @@
     </style>
 </head>
 <body>
-    <h1>上傳檔案並合併</h1>
+    <h2>Upload multiple files and merge</h2>
+    <p style="margin: 0;">Author: Dustin_Chen, email: <a href="mailto:Dustin_Chen@compal.com"
+            style="line-height: 1;">Dustin_Chen@compal.com</a> or <a href="mailto:chuhpsdustin@gmail.com"
+            style="line-height: 1;">chuhpsdustin@gmail.com</a></p>
+    	
     <input type="file" id="fileInput" multiple accept=".txt">
     <div id="progress-container">
         <div id="progress-bar">
@@ -70,6 +82,7 @@
 
         // 上傳檔案
         document.getElementById('fileInput').addEventListener('change', function(event) {
+            event.preventDefault();  // 阻止表單的默认行为，防止页面刷新
             files = Array.from(event.target.files);
             // 按照檔名中的日期數字部分進行排序
             files.sort((a, b) => {
@@ -82,14 +95,14 @@
             });
 
             currentFileIndex = 0;
-            processNextBatch();
+            processNextBatch();  // 开始处理文件
         });
 
         // 更新進度條
         function updateProgress(currentFileIndex, totalFiles) {
             let progress = Math.floor((currentFileIndex / totalFiles) * 100);
             if (currentFileIndex === totalFiles) {
-                progress = 100; // 確保最後一個檔案處理後顯示100%
+                progress = 100; // 确保最后一个文件处理完后显示100%
             }
             progressBar.style.width = `${progress}%`;
             progressText.innerText = `正在處理第 ${currentFileIndex} 個檔案... 進度：${progress}%`;
@@ -103,12 +116,12 @@
             a.href = url;
             a.download = filename;
             a.click();
-            URL.revokeObjectURL(url); // 釋放內存
+            URL.revokeObjectURL(url); // 釋放内存
         }
 
         // 打印 console 日誌並顯示在網頁上
         function logToConsole(message) {
-            console.log(message);  // 在控制台輸出
+            console.log(message);  // 在控制台输出
             consoleLog.textContent += message + '\n'; // 顯示在網頁的控制台區域
             consoleLog.scrollTop = consoleLog.scrollHeight; // 滾動到底部
         }
@@ -136,12 +149,12 @@
                         currentFileIndex = batchEnd;
 
                         // 下載合併的檔案
-                        logToConsole(`處理完 ${batchSize} 個檔案，開始下載合併檔案。`);
+                        logToConsole(`批次處理完最多每次 ${batchSize} 個檔案，開始下載合併檔案。`);
                         downloadMergedFile(batchMergedContent, `merged_batch_${currentFileIndex}.txt`);
 
                         // 如果還有剩餘檔案，繼續處理
                         if (currentFileIndex < files.length) {
-                            setTimeout(processNextBatch, 0); // 使用 setTimeout 讓瀏覽器有時間處理其他任務
+                            setTimeout(processNextBatch, 0); // 使用 setTimeout 讓瀏覽器有时间處理其他任務
                         }
                     }
                 } catch (error) {
